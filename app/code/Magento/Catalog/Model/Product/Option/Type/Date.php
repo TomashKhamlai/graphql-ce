@@ -199,6 +199,7 @@ class Date extends \Magento\Catalog\Model\Product\Option\Type\DefaultType
      * @param string $optionValue Prepared for cart option value
      * @return string
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getFormattedOptionValue($optionValue)
     {
@@ -240,6 +241,7 @@ class Date extends \Magento\Catalog\Model\Product\Option\Type\DefaultType
      *
      * @param string $optionValue Prepared for cart option value
      * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getPrintableOptionValue($optionValue)
     {
@@ -251,6 +253,7 @@ class Date extends \Magento\Catalog\Model\Product\Option\Type\DefaultType
      *
      * @param string $optionValue Prepared for cart option value
      * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getEditableOptionValue($optionValue)
     {
@@ -280,6 +283,7 @@ class Date extends \Magento\Catalog\Model\Product\Option\Type\DefaultType
      *
      * @param string $optionValue
      * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function prepareOptionValueForRequest($optionValue)
     {
@@ -353,6 +357,7 @@ class Date extends \Magento\Catalog\Model\Product\Option\Type\DefaultType
      *
      * @param string $internalValue Datetime value in internal format
      * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _setInternalInRequest($internalValue)
     {
@@ -371,6 +376,7 @@ class Date extends \Magento\Catalog\Model\Product\Option\Type\DefaultType
      * Does option have date?
      *
      * @return boolean
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _dateExists()
     {
@@ -387,6 +393,7 @@ class Date extends \Magento\Catalog\Model\Product\Option\Type\DefaultType
      * Does option have time?
      *
      * @return boolean
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _timeExists()
     {
