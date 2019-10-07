@@ -120,7 +120,6 @@ class ChangeCustomerPasswordTest extends GraphQlAbstract
         $currentPassword = 'password';
         $newPassword = 'anotherPassword1';
         $incorrectCurrentPassword = 'password-incorrect';
-
         $query = $this->getQuery($incorrectCurrentPassword, $newPassword);
 
         $headerMap = $this->getCustomerAuthHeaders($customerEmail, $currentPassword);
@@ -178,6 +177,25 @@ class ChangeCustomerPasswordTest extends GraphQlAbstract
 
         $headerMap = $this->getCustomerAuthHeaders($customerEmail, $currentPassword);
         $this->graphQlMutation($query, [], '', $headerMap);
+    }
+
+    /**
+     * @magentoApiDataFixture Magento/Customer/_files/customer.php
+     * @expectedException \Exception
+     * @expectedExceptionMessage No such entity with customerId = 1
+     */
+    public function testChangePasswordNoSuchEntityException()
+    {
+        $customerEmail = 'customer@example.com';
+        $currentPassword = 'password';
+        $newPassword = 'anotherPassword1';
+
+        $headerMap = $this->getCustomerAuthHeaders($customerEmail, $currentPassword);
+        $customer = $this->customerRepository->getById(1);
+        $this->customerRegistry->push($customer);
+        $query = $this->getQuery($currentPassword, $newPassword);
+        $reps = $this->graphQlMutation($query, [], '', $headerMap);
+        $sku =1;
     }
 
     /**
