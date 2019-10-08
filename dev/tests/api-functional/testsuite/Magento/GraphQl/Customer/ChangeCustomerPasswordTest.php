@@ -14,6 +14,7 @@ use Magento\Customer\Model\CustomerRegistry;
 use Magento\Framework\Exception\AuthenticationException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Registry;
 use Magento\Integration\Api\CustomerTokenServiceInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\GraphQlAbstract;
@@ -180,19 +181,26 @@ class ChangeCustomerPasswordTest extends GraphQlAbstract
     }
 
     /**
+     * @magentoApiDataFixture Magento/Customer/_files/customer_confirmation_config_enable.php
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      * @expectedException \Exception
      * @expectedExceptionMessage No such entity with customerId = 1
      */
     public function testChangePasswordNoSuchEntityException()
     {
+        $confirmed = $this->accountManagement::ACCOUNT_CONFIRMED;
+        $confirmation_required = $this->accountManagement::ACCOUNT_CONFIRMATION_REQUIRED;
+        $confirmation__not_required = $this->accountManagement::ACCOUNT_CONFIRMATION_NOT_REQUIRED;
+
         $customerEmail = 'customer@example.com';
         $currentPassword = 'password';
         $newPassword = 'anotherPassword1';
-
         $headerMap = $this->getCustomerAuthHeaders($customerEmail, $currentPassword);
+
         $customer = $this->customerRepository->getById(1);
-        $this->customerRegistry->push($customer);
+        $confExample = $customer->setConfirmation($confirmation_required);
+        $this->customerRepository->save($customer);
+
         $query = $this->getQuery($currentPassword, $newPassword);
         $reps = $this->graphQlMutation($query, [], '', $headerMap);
         $sku =1;
