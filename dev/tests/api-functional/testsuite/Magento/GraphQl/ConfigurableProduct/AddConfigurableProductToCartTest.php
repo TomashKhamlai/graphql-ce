@@ -8,6 +8,8 @@ declare(strict_types=1);
 namespace Magento\GraphQl\ConfigurableProduct;
 
 use Exception;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\GraphQl\Quote\GetMaskedQuoteIdByReservedOrderId;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\GraphQlAbstract;
@@ -270,6 +272,31 @@ QUERY;
         );
 
         $this->graphQlMutation($query);
+    }
+
+    /**
+     * @magentoApiDataFixture Magento/ConfigurableProduct/_files/configurable_products.php
+     * @magentoApiDataFixture Magento/Checkout/_files/active_quote.php
+     */
+    public function testAddDisabledConfigurableProductVariationToCart()
+    {
+        $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_order_1');
+        $parentSku = 'configurable';
+        $sku = 'simple_10';
+        /** @var ProductRepositoryInterface $productRepository */
+        $productRepository = Bootstrap::getObjectManager()->get(ProductRepositoryInterface::class);
+        $product = $productRepository->get($sku);
+        $product->setStatus(Status::STATUS_DISABLED);
+        $productRepository->save($product);
+        $query = $this->getQuery(
+            $maskedQuoteId,
+            $parentSku,
+            $sku,
+            1
+        );
+
+        $response = $this->graphQlMutation($query);
+        $sku = $response['data'];
     }
 
     /**
